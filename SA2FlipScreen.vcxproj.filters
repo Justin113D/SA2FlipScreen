@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\bool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\MemAccess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -27,12 +24,60 @@
     <ClInclude Include="include\UsercallFunctionHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\ninja.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\njdef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SA2Enums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SA2Functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SA2ModLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SA2Variables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SA2Structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="flipscreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CodeParser.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IniFile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TextConv.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\UsercallFunctionHandler.c">
+    <ClCompile Include="mod.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mod.c">
+    <ClCompile Include="flipscreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\CodeParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\FileSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\IniFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\TextConv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

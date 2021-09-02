@@ -1,14 +1,12 @@
-#pragma once
-
-#ifdef COMPILE_MOD
-
 /**
 * SA2 Mod Loader.
 * Memory access inline functions.
 */
 
+#ifndef MODLOADER_MEMACCESS_H
+#define MODLOADER_MEMACCESS_H
+
 #include <stdint.h>
-#include "bool.h"
 
 // Utility Functions
 #ifdef __cplusplus
@@ -74,7 +72,7 @@ static inline Tret SizeOfArray(const T(&)[N])
 static HANDLE curproc;
 static bool curprocinitialized = false;
 
-static inline BOOL _WriteData(void *writeaddress, const void *data, SIZE_T datasize, SIZE_T *byteswritten)
+static inline BOOL WriteData(void *writeaddress, const void *data, SIZE_T datasize, SIZE_T *byteswritten)
 {
 	if (!curprocinitialized)
 	{
@@ -86,7 +84,71 @@ static inline BOOL _WriteData(void *writeaddress, const void *data, SIZE_T datas
 
 static inline BOOL WriteData(void *writeaddress, const void *data, SIZE_T datasize)
 {
-	return _WriteData(writeaddress, data, datasize, NULL);
+	return WriteData(writeaddress, data, datasize, nullptr);
+}
+
+template<typename T>
+static inline BOOL WriteData(T const *writeaddress, const T data, SIZE_T *byteswritten)
+{
+	return WriteData((void*)writeaddress, (void*)&data, (SIZE_T)sizeof(data), byteswritten);
+}
+
+template<typename T>
+static inline BOOL WriteData(T const *writeaddress, const T data)
+{
+	return WriteData(writeaddress, data, nullptr);
+}
+
+template<typename T>
+static inline BOOL WriteData(T *writeaddress, const T &data, SIZE_T *byteswritten)
+{
+	return WriteData(writeaddress, &data, sizeof(data), byteswritten);
+}
+
+template<typename T>
+static inline BOOL WriteData(T *writeaddress, const T &data)
+{
+	return WriteData(writeaddress, data, nullptr);
+}
+
+template <typename T, size_t N>
+static inline BOOL WriteData(void *writeaddress, const T(&data)[N], SIZE_T *byteswritten)
+{
+	return WriteData(writeaddress, data, SizeOfArray(data), byteswritten);
+}
+
+template <typename T, size_t N>
+static inline BOOL WriteData(void *writeaddress, const T(&data)[N])
+{
+	return WriteData(writeaddress, data, nullptr);
+}
+
+/**
+* Write a repeated byte to an arbitrary address.
+* @param address	[in] Address.
+* @param data		[in] Byte to write.
+* @param byteswritten	[out, opt] Number of bytes written.
+* @return Nonzero on success; 0 on error (check GetLastError()).
+*/
+template <int count>
+static inline BOOL WriteData(void *address, const char data, SIZE_T *byteswritten)
+{
+	char buf[count];
+	memset(buf, data, count);
+	int result = WriteData(address, buf, count, byteswritten);
+	return result;
+}
+
+/**
+* Write a repeated byte to an arbitrary address.
+* @param address	[in] Address.
+* @param data		[in] Byte to write.
+* @return Nonzero on success; 0 on error (check GetLastError()).
+*/
+template <int count>
+static inline BOOL WriteData(void *address, char data)
+{
+	return WriteData<count>(address, data, nullptr);
 }
 
 #if (defined(__i386__) || defined(_M_IX86)) && \
@@ -102,7 +164,7 @@ static inline BOOL WriteJump(void *writeaddress, void *funcaddress)
 	uint8_t data[5];
 	data[0] = 0xE9; // JMP DWORD (relative)
 	*(int32_t*)(data + 1) = (uint32_t)funcaddress - ((uint32_t)writeaddress + 5);
-	return WriteData(writeaddress, data, 5);
+	return WriteData(writeaddress, data);
 }
 
 /**
@@ -116,7 +178,7 @@ static inline BOOL WriteCall(void *writeaddress, void *funcaddress)
 	uint8_t data[5];
 	data[0] = 0xE8; // CALL DWORD (relative)
 	*(int32_t*)(data + 1) = (uint32_t)funcaddress - ((uint32_t)writeaddress + 5);
-	return WriteData(writeaddress, data, 5);
+	return WriteData(writeaddress, data);
 }
 
 #endif
@@ -126,10 +188,6 @@ static inline BOOL WriteCall(void *writeaddress, void *funcaddress)
 	static type &name = *(type *)address
 #define DataArray(type, name, address, length) \
 	static type *const name = (type *)address; static const int name##_Length = length
-#define DirectDataPointer(type, address) \
-	(*(type*)address)
-#define DirectDataArray(type, address) \
-	((type*)address)
 
 // Function pointer declarations.
 #define FunctionPointer(RETURN_TYPE, NAME, ARGS, ADDRESS) \
@@ -151,9 +209,4 @@ static inline BOOL WriteCall(void *writeaddress, void *funcaddress)
 #define patchdecl(address,data) { (void*)address, arrayptrandsize(data) }
 #define ptrdecl(address,data) { (void*)address, (void*)data }
 
-#else
-
-#define DataPointer(type, name, address) type name
-#define DataArray(type, name, address, length) type name[length]
-
-#endif
+#endif /* MODLOADER_MEMACCESS_H */
